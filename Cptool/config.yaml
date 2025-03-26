@@ -1,0 +1,29 @@
+# UAV Configuration Settings
+
+# Simulation Settings
+simulation:
+  display_port: 40000
+  connect_port_1: 22000
+  connect_port_2: 26000
+  speed: 1
+  instance_count: 1
+  daemon: "True"
+
+# Path Settings
+paths:
+  root_dir: /home/ubuntu/Workspace/python/SEGAFUZZ/criu
+  # jmavsim_dir: /home/ubuntu/px4/PX4-Autopilot-v1.15.4/Tools/simulation/jmavsim/jmavsim_run.sh
+
+  px4_root_dir: /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4/PX4-Autopilot-v1.14.4
+  px4_build_dir: /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4/PX4-Autopilot-v1.14.4/build/px4_sitl_default
+
+  # px4_root_dir: /home/ubuntu/px4/PX4-Autopilot-v1.14.4
+  # px4_build_dir: /home/ubuntu/px4/PX4-Autopilot-v1.14.4/build/px4_sitl_default
+
+  # PX4工作目录路径
+  px4_working_dir: /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4_working_dir
+
+
+# Parameter Files
+param_files:
+  px4: /home/ubuntu/Workspace/python/SEGAFUZZ/criu/Cptool/param_px4.json
