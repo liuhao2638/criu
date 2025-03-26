@@ -86,3 +86,5 @@ sudo mount --bind /home/ubuntu/px4 /home/ubuntu/Workspace/python/SEGAFUZZ/criu/r
 
 sudo criu dump -D ./sih -j --tcp-established --file-locks -t 5105
 sudo criu restore -D ./sih -j --tcp-established
+# criu
+# criu
