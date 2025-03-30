@@ -7,8 +7,7 @@ import argparse
 # 读取配置文件
 import yaml
 
-with open("./Cptool/config.yaml", "r") as f:
-    config = yaml.load(f.read(), Loader=yaml.FullLoader)
+
     
 class PX4Param:
     def __init__(self,instance_count,base_port,param_files):
@@ -48,7 +47,8 @@ class PX4Param:
             # pool.join()   # 等待所有任务完成
 
 if __name__ == "__main__":
-    
+    with open("./Cptool/config.yaml", "r") as f:
+        config = yaml.load(f.read(), Loader=yaml.FullLoader)
     # 创建 ArgumentParser 对象
     parser = argparse.ArgumentParser()
 

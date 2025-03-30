@@ -50,7 +50,8 @@ start_single_sih_sitl() {
     # 启动进程并重定向输出
     if [ "$is_daemon" = "True" ]; then
         cmd+=("-d")
-        "${cmd[@]}" > "${px4_working_dir}/log/$instance_num.log" 2>&1 &
+        # "${cmd[@]}" > "${px4_working_dir}/log/$instance_num.log" 2>&1 &
+        "${cmd[@]}" > "${working_dir}/out.log" 2>&1 &
     else
         "${cmd[@]}" &
     fi

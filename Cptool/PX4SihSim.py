@@ -3,15 +3,12 @@ import argparse
 import os
 import subprocess
 import multiprocessing
-# from concurrent.futures import ThreadPoolExecutor
+
 import yaml
 
-# 读取配置文件
-with open("./Cptool/config.yaml", "r") as f:
-    config = yaml.load(f.read(), Loader=yaml.FullLoader)
 
 
-class PX4Sih:
+class PX4SihSim:
 
     def __init__(self, px4_working_dir, px4_build_dir, sim_speed, instance_count, is_daemon):
         # 初始化类属性
@@ -22,12 +19,11 @@ class PX4Sih:
         self.is_daemon = is_daemon
         # 初始化用于存储模拟实例进程的列表
         self.processes = []
-
     # 开启一个硬件内仿真(sih)进程，返回进程PID
     def start_single_sih_sitl(self, instance_num):
         # 设定px4进程的工作目录
-        # px4_working_dir = f"{self.px4_working_dir}/instance_{instance_num}"
-        px4_working_dir = f"{self.px4_working_dir}/instance/instance_{instance_num}"
+        px4_working_dir = f"{self.px4_working_dir}/instance_dir/instance_{instance_num}"
+        # px4_working_dir = f"{self.px4_working_dir}/instance/instance_{instance_num}"
         # os.system(f"rm -rf {px4_working_dir} && mkdir -p {px4_working_dir}")
         os.system(f"mkdir -p {px4_working_dir}")
 
@@ -52,8 +48,8 @@ class PX4Sih:
                 f"{self.px4_build_dir}/etc/init.d-posix/rcS",
             ]
             # 打开文件来重定向输出
-            # stdout_file = open(f"{px4_working_dir}/out.log", "w")
-            stdout_file = open(f"{self.px4_working_dir}/log/{instance_num}.log", "w")
+            stdout_file = open(f"{px4_working_dir}/out.log", "w")
+            # stdout_file = open(f"{self.px4_working_dir}/log/{instance_num}.log", "w")
 
             process = subprocess.Popen(
                 start_px4_sih_sitl_command, env=px4_env, stdout=stdout_file, stderr=stdout_file  # 重定向stdout到文件  # 重定向stderr到文件
@@ -74,7 +70,7 @@ class PX4Sih:
                 start_px4_sih_sitl_command, env=px4_env
             )
             # print(f"instance_count:{instance_count} Process ID (PID):{process.pid}")
-        return process
+        return process.pid
 
     # 并行执行多个Sih实例的启动
     def start_sih_sitl(self):
@@ -94,23 +90,43 @@ class PX4Sih:
             self.processes.append(p)
             p.start()
 
-        # 等待所有进程完成
-        for p in self.processes:
-            p.join()
+        # # 等待所有进程完成
+        # for p in self.processes:
+        #     p.join()
         print(f"px4实例数量：{instance_count}")
         print("All Sih PX4 instances started.")
         # return self.processes
+    # 并行执行多个Sih实例的启动
+    def start_sih_sitl_bash(self):
+        command = ["bash","./Cptool/PX4SihSim.bash",str(self.px4_working_dir), str(self.px4_build_dir), str(self.instance_count), str(self.sim_speed), str(self.is_daemon)]
+
+        # print(command)
+        # 使用subprocess启动Bash脚本并捕获输出
+        # process = subprocess.Popen(
+        #     command,
+        #     stdout=subprocess.PIPE,
+        #     stderr=subprocess.PIPE,
+        #     text=True
+        # )
+
+        # # 等待脚本执行完成并获取输出
+        # stdout, stderr = process.communicate()
+        # print(stdout)
+        
+        process = subprocess.Popen(command)
+
+
 
     # 回收所有px4子进程
     def stop_sih_sitl(self):
-        for p in self.processes:
-            p.terminate()
-            # 等待子进程真正结束
-            p.join()
+        os.system("killall px4")
 
-    #执行起飞前检查
 
 if __name__ == "__main__":
+    # 读取配置文件
+    with open("./Cptool/config.yaml", "r") as f:
+        config = yaml.load(f.read(), Loader=yaml.FullLoader)
+
     # 创建 ArgumentParser 对象
     parser = argparse.ArgumentParser()
 
@@ -126,22 +142,21 @@ if __name__ == "__main__":
     # print(args.is_daemon)
 
     # 启动多个实例的并行处理
-    px4Sih = PX4Sih(
+    px4SihSim = PX4SihSim(
         px4_working_dir=config['paths']['px4_working_dir'],
         px4_build_dir=config['paths']['px4_build_dir'],
         sim_speed=args.sim_speed,
         instance_count=args.instance_count,
         is_daemon=args.is_daemon
     )
-    # px4Sih.start_sih_sitl()
-    px4Sih.start_sih_sitl()
+    px4SihSim.start_sih_sitl_bash()
 
-    try:
-        print("运行中，按 Ctrl+C 退出")
-        while True:
-            # 阻塞程序，保持运行
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("\n检测到 Ctrl+C，清理px4实例...")
-        px4Sih.stop_sih_sitl()
-        print("程序已退出")
+    # try:
+    #     print("运行中，按 Ctrl+C 退出")
+    #     while True:
+    #         # 阻塞程序，保持运行
+    #         time.sleep(1)
+    # except KeyboardInterrupt:
+    #     print("\n检测到 Ctrl+C，清理px4实例...")
+    #     px4SihSim.stop_sih_sitl()
+    #     print("程序已退出")

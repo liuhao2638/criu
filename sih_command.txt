@@ -2,7 +2,7 @@ make px4_sitl sihsim_quadx
 
 ./Tools/simulation/jmavsim/jmavsim_run.sh -p 19410 -u -q -o
 
-sudo criu dump -D ~/criu/sih -j -t 1234  --tcp-established --file-locks
+sudo criu dump -D ~/criu/sih -j -t 20513  --tcp-established --file-locks
 sudo criu restore -D ~/criu/sih/ -j --tcp-established
 
 sudo criu dump -D ~/criu/sih1 -j -t 19796 --tcp-established --file-locks

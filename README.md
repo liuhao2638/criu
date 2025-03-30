@@ -1,7 +1,3 @@
-
-
-
-
 ./Tools/simulation/jmavsim/jmavsim_run.sh -p 19410 -u -q -o
 
 sudo criu dump -D ~/criu/sih -j -t 5810  --tcp-established --file-locks
@@ -78,13 +74,13 @@ make px4_sitl sihsim_quadx
 #完成px4目录到ramdisk目录的映射
 sudo mount -t tmpfs -o size=1G tmpfs /path/to/b
 mkdir -p /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4
-sudo mount --bind /home/ubuntu/px4 /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4
+sudo mount --bind /home/liuhao/px4 /home/liuhao/criu/ramdisk/px4
 
 /home/ubuntu/Workspace/python/SEGAFUZZ/criu/ramdisk/px4/PX4-Autopilot-v1.14.4/build/px4_sitl_default/bin/px4-bsondump --instance 0  parameters.bson
 
 
 
-sudo criu dump -D ./sih -j --tcp-established --file-locks -t 5105
+sudo criu dump -D ./sih -j --tcp-established --file-locks -t 1681336
 sudo criu restore -D ./sih -j --tcp-established
-# criu
-# criu
+
+sudo criu dump -D ./sih --ext-unix-sk -j -t 439711 

@@ -7,7 +7,7 @@ import yaml
 
 
 # 读取配置文件
-with open("./Cptool/config.yaml", "r") as f:
+with open("config.yaml", "r") as f:
     config = yaml.load(f.read(), Loader=yaml.FullLoader)
 
 
